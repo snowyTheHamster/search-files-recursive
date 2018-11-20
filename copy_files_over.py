@@ -31,7 +31,7 @@ fsize = sizes[0] #pick filesize no. from above list
 source = './input' #select directory to traverse through
 destination = './output' #select the output directory
 
-for dirpath, dirnames, filenames in os.walk(source): #traverse the source
+for dirpath, dirnames, filenames in os.walk(source): #traverse through the source directory
     for f in filenames:
         ext = os.path.splitext(f)[-1] #get the files extension
         files = (os.path.join(dirpath, f)) #the full path of the source files

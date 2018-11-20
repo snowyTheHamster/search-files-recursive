@@ -1,5 +1,5 @@
-# traverse_files_and_transfer_files
-This Python script searches files recursively by extension in a directory and copy/pastes them into one folder.
+# Pyhton - find files recursively and copy/paste to a single folder
+This Python script searches files recursively by file extension in a directory and copy/pastes them into one folder.
 
 # Problem
 
