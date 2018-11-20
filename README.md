@@ -1,4 +1,4 @@
-# Pyhton - find files recursively and copy/paste to a single folder
+# Python - find files recursively and copy/paste to a single folder
 This Python script searches files recursively by file extension in a directory and copy/pastes them into one folder.
 
 # Problem
