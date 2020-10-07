@@ -1,17 +1,36 @@
 import PySimpleGUI as sg
 import os
-import time
 import shutil
-
 
 sg.theme('Dark Blue 17') # Add Color
 
+# list of extensions
+extensions = [
+    'dng',
+    'gif',
+    'png',
+    'jpg',
+    'avi',
+    'mov',
+    'mp4',
+    '7z',
+    'rar',
+    'tar',
+    'tar.gz',
+    'zip',
+]
+
+file_info = [] # file info for popup
+selected_extensions = [] # list of selected extensions
 
 # All the stuff inside you window
 layout = [
     [sg.Text('')],
     [sg.Text('FILTER FILES BY EXTENSION:')],
-    [sg.Text('e.g: .jpg'), sg.InputText(key='_CUSTOM_EXT_')],
+    [sg.Checkbox(f'{i}', key=f'{i}') for i in extensions],
+    [sg.Text('choose own extension: zip'), sg.InputText(key='_CUSTOM_EXT_')],
+    [sg.Text('multiple extensions: zip, tar')],
+    [sg.Text('extension with 2 dots: tar.gz')],
     [sg.Text('( Leave blank to disable filter )')],
     [sg.Text('')],
     [sg.Text('FILTER BY FILE SIZE')],
@@ -42,12 +61,29 @@ while True:
     if event in (None, 'Cancel', 'Quit'):
         break
 
-    # get start time
-    starttime = time.time()
-
     dir_input = values['_DIRINPUT_']
     dir_output = values['_DIROUTPUT_']
     custom_ext = values['_CUSTOM_EXT_']
+
+
+    # add user entered extension to selected_extensions
+    if custom_ext:
+        if ',' in custom_ext:
+            custom_ext = custom_ext.split(",") # becomes a list
+            for cext in custom_ext: # get each comma separated entry
+                cext = cext.strip() # remove any whitespace
+                selected_extensions.append(cext) # add string to selected_extensions
+        else:
+            selected_extensions.append(custom_ext) # add string to selected_extensions
+
+
+    # add user ticked extension to selected_extensions
+    for i in extensions:
+        if values[f'{i}'] == True:
+            selected_extensions.append(f'{i}')
+
+    selected_extensions = list(dict.fromkeys(selected_extensions)) # remove duplicates
+
     
     # set filesize option
     if values['Radio_filesize_1'] == True:
@@ -74,10 +110,10 @@ while True:
         sg.popup('Search Folder can\'t be empty')
 
     else:
-        file_info = []
         for dirpath, dirnames, filenames in os.walk(dir_input):
             for f in filenames:
                 ext = os.path.splitext(f)[-1] # file extension
+                ext = ext[1:] # remove the dot
                 thefile = (os.path.join(dirpath, f)) # file fullpath
                 size = os.stat(thefile).st_size # filesize (bytes)
                 sizeinmb = round(size/1000000, 2) #filesize (MB)
@@ -85,42 +121,73 @@ while True:
                 file_output_fullpath = (os.path.join(dir_output, f))
 
 
-                # copy files btn (clicked)
+                # COPY FILES clicked
                 if event == 'Copy Files':
 
-                    if dir_output: # output_folder selected
+                    # output_folder selected
+                    if dir_output:
 
-                        # file_extension filter ON
-                        if custom_ext: 
-                            if ext == custom_ext:
-                                print(f'copying {thefile} to {file_output_fullpath} filesize: {sizeinmb}MB')
-                                shutil.copy2(thefile, file_output_fullpath)
-                        
-                        # file_extension filter OFF
+                        # file_size filter ON
+                        if filesize_filter != 'off':
+                            # file_extension filter ON
+                            if custom_ext:
+                                if filesize_filter == 'lt':
+                                    if ext == custom_ext and sizeinmb < custom_filesize:
+                                        print(f'copying {thefile} to {file_output_fullpath} filesize: {sizeinmb}MB')
+                                        file_info.append(f'{f} ({sizeinmb}MB)')
+                                        shutil.copy2(thefile, file_output_fullpath)
+                                elif filesize_filter == 'gt':
+                                    if ext == custom_ext and sizeinmb > custom_filesize:
+                                        print(f'copying {thefile} to {file_output_fullpath} filesize: {sizeinmb}MB')
+                                        file_info.append(f'{f} ({sizeinmb}MB)')
+                                        shutil.copy2(thefile, file_output_fullpath)
+
+                            # file_extension filter OFF
+                            else:
+                                if filesize_filter == 'lt':
+                                    if sizeinmb < custom_filesize:
+                                        print(f'copying {thefile} to {file_output_fullpath} filesize: {sizeinmb}MB')
+                                        file_info.append(f'{f} ({sizeinmb}MB)')
+                                        shutil.copy2(thefile, file_output_fullpath)
+                                elif filesize_filter == 'gt':
+                                    if sizeinmb > custom_filesize:
+                                        print(f'copying {thefile} to {file_output_fullpath} filesize: {sizeinmb}MB')
+                                        file_info.append(f'{f} ({sizeinmb}MB)')
+                                        shutil.copy2(thefile, file_output_fullpath)
+                    
+                        # file_size filter OFF
                         else:
-                            print(f'copying {thefile} to {file_output_fullpath} filesize: {sizeinmb}MB')
-                            shutil.copy2(thefile, file_output_fullpath)
+                            # file_extension filter ON
+                            if custom_ext:
+                                if ext == custom_ext:
+                                    print(f'copying {thefile} to {file_output_fullpath} filesize: {sizeinmb}MB')
+                                    file_info.append(f'{f} ({sizeinmb}MB)')
+                                    shutil.copy2(thefile, file_output_fullpath)
 
-                    # get end time
-                    endtime = time.time()
+                            # file_extension filter OFF
+                            else:
+                                print(f'copying {thefile} to {file_output_fullpath} filesize: {sizeinmb}MB')
+                                file_info.append(f'{f} ({sizeinmb}MB)')
+                                shutil.copy2(thefile, file_output_fullpath)
 
 
-                # search btn (clicked)
+                # SEARCH clicked
                 if event == 'Search':
 
                     # file_size filter ON
                     if filesize_filter != 'off':
-                        # file_extension filter ON
-                        if custom_ext:
+                        if selected_extensions: # if user chose extensions
                             if filesize_filter == 'lt':
-                                if ext == custom_ext and sizeinmb < custom_filesize:
-                                    file_info.append(f'{f} ({sizeinmb}MB)')
-                            elif filesize_filter == 'gt':
-                                if ext == custom_ext and sizeinmb > custom_filesize:
-                                    file_info.append(f'{f} ({sizeinmb}MB)')
+                                for s_ext in selected_extensions:
+                                    if ext in s_ext and sizeinmb < custom_filesize:
+                                        file_info.append(f'{f} ({sizeinmb}MB)')
 
-                        # file_extension filter OFF
-                        else:
+                            elif filesize_filter == 'gt':
+                                for s_ext in selected_extensions:
+                                    if ext in s_ext and sizeinmb > custom_filesize:
+                                        file_info.append(f'{f} ({sizeinmb}MB)')
+
+                        else: # no extensions selected
                             if filesize_filter == 'lt':
                                 if sizeinmb < custom_filesize:
                                     file_info.append(f'{f} ({sizeinmb}MB)')
@@ -128,33 +195,29 @@ while True:
                                 if sizeinmb > custom_filesize:
                                     file_info.append(f'{f} ({sizeinmb}MB)')
                 
+
                     # file_size filter OFF
                     else:
+                        if selected_extensions: # if user chose extensions
+                            for s_ext in selected_extensions:
+                                if ext in s_ext:
+                                    file_info.append(f'{f} ({sizeinmb}MB)')
 
-                        # file_extension filter ON
-                        if custom_ext:
-                            if ext == custom_ext:
-                                file_info.append(f'{f} ({sizeinmb}MB)')
-
-                        # file_extension filter OFF
-                        else:
+                        else: # no extensions selected
                             file_info.append(f'{f} ({sizeinmb}MB)')
 
-                    # get end time
-                    endtime = time.time()
-        
 
-        # Displays file info when search is clicked
-        if event == 'Search':
+        # Display info when btn clicked
+        if (event == 'Search') or (event == 'Copy Files'):
             if not file_info :
                 sg.popup('no files found for that search')
             else:
-                sg.popup(file_info)
+                sg.popup(file_info, 'operation: ', event)
 
-
-        # time taken to run script
-        totaltime = endtime - starttime
-        totaltime = round(totaltime, 1)
-        print(f'Done processing in: {totaltime} seconds. \n')
+            print(selected_extensions) # check if selected extensions list is correct (might need to remove duplicate)
+            
+            # Clear Lists
+            file_info.clear()
+            selected_extensions.clear()
 
 window.close()
