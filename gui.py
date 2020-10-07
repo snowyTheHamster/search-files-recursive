@@ -26,6 +26,10 @@ selected_extensions = [] # list of selected extensions
 # All the stuff inside you window
 layout = [
     [sg.Text('')],
+    [sg.Text('SEARCH FILES IN THIS FOLDER RECURSIVELY:')],
+    [sg.Text('Search folder'), sg.Input(key='_DIRINPUT_'), sg.FolderBrowse(),],
+    [sg.Button("Search")],
+    [sg.Text('')],
     [sg.Text('FILTER FILES BY EXTENSION:')],
     [sg.Checkbox(f'{i}', key=f'{i}') for i in extensions],
     [sg.Text('choose own extension: zip'), sg.InputText(key='_CUSTOM_EXT_')],
@@ -36,11 +40,6 @@ layout = [
     [sg.Text('FILTER BY FILE SIZE')],
     [sg.Radio('off', "_RADIO_FILESIZE_", default=True, key='Radio_filesize_1'), sg.Radio('less than', "_RADIO_FILESIZE_", key='Radio_filesize_2'), sg.Radio('greater than', "_RADIO_FILESIZE_", key='Radio_filesize_3')],
     [sg.Text('Filesize (MB)'), sg.InputText(key='_CUSTOM_FILESIZE_')],
-    [sg.Text('')],
-    [sg.Text('')],
-    [sg.Text('SEARCH FILES IN THIS FOLDER RECURSIVELY:')],
-    [sg.Text('Search folder'), sg.Input(key='_DIRINPUT_'), sg.FolderBrowse(),],
-    [sg.Button("Search")],
     [sg.Text('')],
     [sg.Text('')],
     [sg.Text('COPY FILES TO THIS FOLDER:')],
@@ -129,18 +128,19 @@ while True:
 
                         # file_size filter ON
                         if filesize_filter != 'off':
-                            # file_extension filter ON
-                            if custom_ext:
+                            if selected_extensions: # if user chose extensions
                                 if filesize_filter == 'lt':
-                                    if ext == custom_ext and sizeinmb < custom_filesize:
-                                        print(f'copying {thefile} to {file_output_fullpath} filesize: {sizeinmb}MB')
-                                        file_info.append(f'{f} ({sizeinmb}MB)')
-                                        shutil.copy2(thefile, file_output_fullpath)
+                                    for s_ext in selected_extensions:
+                                        if ext in s_ext and sizeinmb < custom_filesize:
+                                            print(f'copying {thefile} to {file_output_fullpath} filesize: {sizeinmb}MB')
+                                            file_info.append(f'{f} ({sizeinmb}MB)')
+                                            shutil.copy2(thefile, file_output_fullpath)
                                 elif filesize_filter == 'gt':
-                                    if ext == custom_ext and sizeinmb > custom_filesize:
-                                        print(f'copying {thefile} to {file_output_fullpath} filesize: {sizeinmb}MB')
-                                        file_info.append(f'{f} ({sizeinmb}MB)')
-                                        shutil.copy2(thefile, file_output_fullpath)
+                                    for s_ext in selected_extensions:
+                                        if ext in s_ext and sizeinmb > custom_filesize:
+                                            print(f'copying {thefile} to {file_output_fullpath} filesize: {sizeinmb}MB')
+                                            file_info.append(f'{f} ({sizeinmb}MB)')
+                                            shutil.copy2(thefile, file_output_fullpath)
 
                             # file_extension filter OFF
                             else:
@@ -157,12 +157,12 @@ while True:
                     
                         # file_size filter OFF
                         else:
-                            # file_extension filter ON
-                            if custom_ext:
-                                if ext == custom_ext:
-                                    print(f'copying {thefile} to {file_output_fullpath} filesize: {sizeinmb}MB')
-                                    file_info.append(f'{f} ({sizeinmb}MB)')
-                                    shutil.copy2(thefile, file_output_fullpath)
+                            if selected_extensions: # if user chose extensions
+                                for s_ext in selected_extensions:
+                                    if ext in s_ext:
+                                        print(f'copying {thefile} to {file_output_fullpath} filesize: {sizeinmb}MB')
+                                        file_info.append(f'{f} ({sizeinmb}MB)')
+                                        shutil.copy2(thefile, file_output_fullpath)
 
                             # file_extension filter OFF
                             else:
