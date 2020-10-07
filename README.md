@@ -1,49 +1,34 @@
-# Python - find files recursively and copy/paste to a single folder
-This Python script searches files recursively by file extension in a directory and copy/pastes them into one folder.
+# Python GUI - search files recursively
 
-# Problem
+This Python script find files recursively by file extension or filesize;
 
-Just recovered a failed drive or sd card? Some recovery softwares dump the recovered files across multiple folders making it troublesome to organize.
+You can then copy those files into one folder.
 
-These python scripts will help you find all the scattered files and paste them into one folder.
+## Use Case
 
-# Usage
+- Your sd card fails, you use a recovery app but it saves the images across multiple folders.
+- Search for files with certain file extensions.
+- Search for large files taking up disk space.
 
-- **get_files_info.py** saves a list of data about your files to a txt file.
-- **copy_files_over.py** copy/pastes the desired files into an output folder.
+## How to Install
 
-### get_files_info.py
+- clone this repo: `git clone https://github.com/snowyTheHamster/search-files-recursive .`
+- create a virtual environment: `python -m venv .venv`
+- install required modules: `pip install -r requirements.txt`
+- launch the gui script: `python gui.py`
 
-**get_files_info.py** will list out all files in the source to a text file. You can choose to filter by filetype, filesize and also choose the location of your source folder.
+A gui app should open for you to use.
 
-Near the top of the script (#1) is a list of file extensions, add or edit them to your needs.
+## Executable
 
-Change the parameter at (#3) to select filetype, filesize, source location etc.
+You can make the script executable with pyinstaller.
 
-Near the bottom of the script (#4a, #4b) choose whether to filter just by 'filetype' or 'filetype & filesize' by commenting/uncommenting the **if** conditions.
 
-run the script:
+## Issues / Future Milestone Ideas
 
-```
-py get_files_info.py
-```
-
-You should now have a text file with a list of information based on your filter.
-
-This info can help you decide whether to copy/paste all files at once or separate by filesizes in the next step.
-
-### copy_files_over.py
-
-**copy_files_over.py** is similar to the first script but instead will copy/paste the files to your desired destination.
-
-You need to select filetype, filesize and folder locations just like the first script.
-
-run the script with:
-
-```
-py copy_files_over.py
-```
-
-You should now have the selected files copied over to your destination folder.
-
-If not, check you have selected the correct file extensions, filesizes and whether you want the filesize '<' or '>' than the desired size. Also check that the folder locations are correct.
+- Search results displayed in popup not 1 result per line
+- Add checkboxs for common file extensions
+- Display all file extension types in search result
+- Add option to search for filename
+- Add option to search for filename (using regex)
+- Print out total combined filesizes of search result
