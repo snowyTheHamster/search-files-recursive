@@ -27,6 +27,7 @@ You can make the script executable with pyinstaller.
 ## Issues / Future Milestone Ideas
 
 - Search results displayed in popup not 1 result per line
+- Search results overflows window and no way to reach close button
 - Add checkboxs for common file extensions
 - Display all file extension types in search result
 - Add option to search for filename
