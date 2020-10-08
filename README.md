@@ -24,12 +24,15 @@ A gui app should open for you to use.
 You can make the script executable with pyinstaller.
 
 
-## Issues / Future Milestone Ideas
+## Issues / Possible Milestones
 
-- Search results displayed in popup not 1 result per line
-- Search results overflows window and no way to reach close button
-- Add checkboxs for common file extensions
-- Display all file extension types in search result
-- Add option to search for filename
-- Add option to search for filename (using regex)
-- Print out total combined filesizes of search result
+[x] Search results displayed in popup not 1 result per line
+[x] Search results overflows window and no way to reach close button
+[x] Add checkboxs for common file extensions
+[] Update results textbox size depending on length of results
+[] Display all file extension types in search result
+[] Add option to search for filename
+[] Add option to search for filename (using regex)
+[] Print out total combined filesizes of search result
+[] Show progress bar
+[] optimize loop for multiple queries (e.g: jpg, gif, zip -> 1 loop instead of 3 times)
