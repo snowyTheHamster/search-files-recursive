@@ -35,12 +35,13 @@ class Gui:
             [sg.Radio('off', "_RADIO_FILESIZE_", default=True, key='Radio_filesize_1'), sg.Radio('less than', "_RADIO_FILESIZE_", key='Radio_filesize_2'), sg.Radio('greater than', "_RADIO_FILESIZE_", key='Radio_filesize_3')],
             [sg.Text('Filesize (MB)'), sg.InputText(key='_CUSTOM_FILESIZE_')],
             [sg.Button("Search", size=(10, 1), key='_SEARCH_')],
+            [sg.Text('Search will create a "search_results.txt" file with the results.')],
             [sg.Output(size=(100,30))],
             [sg.Text('')],
             [sg.Text('COPY FILES', font=(22))],
-            [sg.Text('Copy files in result to Output Folder. PLEASE DOUBLE-CHECK search_results.txt')],
+            [sg.Text('Copies "search_results.txt" list to Output Folder. Please DOUBLE-CHECK "search_results.txt"')],
             [sg.Text('Select Output Folder'), sg.Input(key='_DIROUTPUT_'), sg.FolderBrowse(),],
-            [sg.Text('( If Output Folder empty, nothing happens. )')],
+            [sg.Text('(If Output Folder empty or "search_results.txt" file missing, nothing happens.)')],
             [sg.Button("Copy Files", size=(10, 1),  key='_COPY_')],
         ]
 
@@ -128,7 +129,7 @@ class CopyCat:
 
     def copy_over(self, values: Dict[str, str]) -> None:
 
-        if values.get('_DIROUTPUT_') != '':
+        if values.get('_DIROUTPUT_') != '' and os.path.exists("search_results.txt"):
             with open('search_results.txt', 'r') as f:
                 for row in f:
                     row = row.strip()
@@ -138,7 +139,7 @@ class CopyCat:
                     shutil.copy2(row, file_output_fullpath) # copy file over
         else:
             # if empty
-            print('Output Folder is empty..')
+            print('Output Folder is empty or "search_results.txt" file missing .. nothing happens')
 
 
 def main():

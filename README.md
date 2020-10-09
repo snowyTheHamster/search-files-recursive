@@ -37,16 +37,9 @@ His video on a very similar project: [https://www.youtube.com/watch?v=IWDC9vcBIF
 - ~~Update results textbox size depending on length of results~~
 - ~~use loop only for search logic (performance)~~ use index (serialization)
 - ~~add timestamp for print re-index~~
-- Display all file extension types in search result
-- Show progress bar ?
-- use tuple instead of list for file_extensions (performance)
+- ~~use tuple instead of list for file_extensions (performance)~~ slightly cleaner code but small performance difference
+- finish filesize filter logic
 - separate filesize & extension filter logic
-
-
-### using tuple instead of list for matching file extensions:
-```
-for root, dirs, files in os.walk("path/to/directory"):
-    for file in files:
-        if file.endswith((".py", ".json")): # The arg can be a tuple of suffixes to look for
-            # do stuff
-```
+- Display all files total filesize ?
+- Display all file extension types in search result ?
+- Show progress bar ?
