@@ -2,13 +2,13 @@
 
 This Python script find files recursively by file extension or filesize;
 
-You can then copy those files into one folder.
+You can then copy the files into one folder.
 
 ## Use Case
 
-- Your sd card fails, you use a recovery app but it saves the images across multiple folders.
 - Search for files with certain file extensions.
 - Search for large files taking up disk space.
+- copy files over to one folder
 
 ## How to Install
 
@@ -21,24 +21,28 @@ A gui app should open for you to use.
 
 ## Executable
 
-You can make the script executable with pyinstaller.
+make the script executable with pyinstaller.
 
+## Credit
+
+I cleaned up the code using [Israel Dryer's example](https://github.com/israel-dryer/File-Search-Engine/blob/master/file_search_engine.py)
+
+His video on a very similar project: [https://www.youtube.com/watch?v=IWDC9vcBIFQ](https://www.youtube.com/watch?v=IWDC9vcBIFQ)
 
 ## Issues / Possible Milestones
 
 - ~~Search results displayed in popup not 1 result per line~~
 - ~~Search results overflows window and no way to reach close button~~
 - ~~Add checkboxs for common file extensions~~
-- Update results textbox size depending on length of results
+- ~~Update results textbox size depending on length of results~~
 - Display all file extension types in search result
 - Add option to search for filename (regex) ?
 - Print out total combined filesizes of search result ? 
 - Show progress bar
 - use tuple instead of list for file_extensions (performance)
-- use loop only for search logic (performance)
-- copy logic uses results from search logic (performance)
-- separate extension, filesize logics
-
+- ~~use loop only for search logic (performance)~~ use index (serialization)
+- separate filesize & extension filter logic
+- add timestamp for print re-index
 
 
 ### using tuple instead of list for matching file extensions:
