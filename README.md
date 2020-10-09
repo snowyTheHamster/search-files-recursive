@@ -35,14 +35,12 @@ His video on a very similar project: [https://www.youtube.com/watch?v=IWDC9vcBIF
 - ~~Search results overflows window and no way to reach close button~~
 - ~~Add checkboxs for common file extensions~~
 - ~~Update results textbox size depending on length of results~~
-- Display all file extension types in search result
-- Add option to search for filename (regex) ?
-- Print out total combined filesizes of search result ? 
-- Show progress bar
-- use tuple instead of list for file_extensions (performance)
 - ~~use loop only for search logic (performance)~~ use index (serialization)
+- ~~add timestamp for print re-index~~
+- Display all file extension types in search result
+- Show progress bar ?
+- use tuple instead of list for file_extensions (performance)
 - separate filesize & extension filter logic
-- add timestamp for print re-index
 
 
 ### using tuple instead of list for matching file extensions:
