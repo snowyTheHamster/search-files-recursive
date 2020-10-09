@@ -35,7 +35,7 @@ class Gui:
             [sg.Radio('off', "_RADIO_FILESIZE_", default=True, key='Radio_filesize_1'), sg.Radio('less than', "_RADIO_FILESIZE_", key='Radio_filesize_2'), sg.Radio('greater than', "_RADIO_FILESIZE_", key='Radio_filesize_3')],
             [sg.Text('Filesize (MB)'), sg.InputText(key='_CUSTOM_FILESIZE_')],
             [sg.Button("Search", size=(10, 1), key='_SEARCH_')],
-            # [sg.Output(size=(100,30))],
+            [sg.Output(size=(100,30))],
             [sg.Text('')],
             [sg.Text('COPY FILES', font=(22))],
             [sg.Text('Copy files in result to Output Folder. PLEASE DOUBLE-CHECK search_results.txt')],
