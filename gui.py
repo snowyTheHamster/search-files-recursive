@@ -15,9 +15,6 @@ extensions = [
     'mp4',
 ]
 
-now = datetime.datetime.now()
-likenow = f'{now.hour}:{now.minute}:{now.second}'
-
 class Gui:
 
     def __init__(self):
@@ -45,12 +42,13 @@ class Gui:
             [sg.Button("Copy Files", size=(10, 1),  key='_COPY_')],
         ]
 
-        self.window: object = sg.Window('Recursive Search Engine', self.layout, element_justification='left')
+        self.window: object = sg.Window('Recursive Search Engine', self.layout, element_justification='left', grab_anywhere=True)
 
 class SearchEngine:
     def __init__(self):
         self.file_index = [] # directory listing from os.walk
         self.results = [] # search results from search method
+        self.outputs = [] # search results to output on display
         self.matchs = 0 # no of records matched 
         self.records = 0 # no of records searched
 
@@ -95,26 +93,78 @@ class SearchEngine:
         ''' Search for the term based on the type in the index; the types of search
             include: contains, startswith, endswith; save the results to file '''
         self.results.clear()
+        self.outputs.clear()
         self.matches = 0
         self.records = 0
 
-        # search for matches and count results
-        for path, files in self.file_index:
-            for file in files:
-                self.records +=1
 
-                if self.selected_extensions:
-                    for s_ext in self.selected_extensions:
-                        if file.endswith(s_ext):
-                            result = path.replace('\\','/') + '/' + file
-                            self.results.append(result)
-                            self.matches +=1
-                        else:
-                            continue
-                else:
-                            result = path.replace('\\','/') + '/' + file
-                            self.results.append(result)
-                            self.matches +=1
+        def output_results():
+            result = path.replace('\\','/') + '/' + file
+            output = path.replace('\\','/') + f'{file} {sizeinmb}MB'
+            self.results.append(result)
+            self.outputs.append(output)
+            self.matches +=1
+
+        # do file_size logic here
+        if values['Radio_filesize_1'] == True:
+            fsize_op = 'off'
+        elif values['Radio_filesize_2'] == True:
+            fsize_op = 'lt'
+            try:
+                custom_fsize = float(values['_CUSTOM_FILESIZE_'])
+            except:
+                custom_fsize = 0.0
+        elif values['Radio_filesize_3'] == True:
+            fsize_op = 'gt'
+            try:
+                custom_fsize = float(values['_CUSTOM_FILESIZE_'])
+            except:
+                custom_fsize = 0.0
+
+        if fsize_op == 'off':
+            # search for matches and count results
+            for path, files in self.file_index:
+                for file in files:
+                    thefile = (os.path.join(path, file)) # file fullpath
+                    size = os.stat(thefile).st_size # filesize (bytes)
+                    sizeinmb = round(size/1000000, 2) #filesize (MB)
+                    self.records +=1
+
+                    if self.selected_extensions:
+                        for s_ext in self.selected_extensions:
+                            if file.endswith(s_ext):
+                                output_results()
+                            else:
+                                continue
+                    else:
+                        output_results()
+
+        else:
+            # search for matches and count results
+            for path, files in self.file_index:
+                for file in files:
+                    thefile = (os.path.join(path, file)) # file fullpath
+                    size = os.stat(thefile).st_size # filesize (bytes)
+                    sizeinmb = round(size/1000000, 2) #filesize (MB)
+                    self.records +=1
+
+                    if self.selected_extensions:
+                        for s_ext in self.selected_extensions:
+                            if fsize_op == 'lt':
+                                if file.endswith(s_ext) and sizeinmb < custom_fsize:
+                                    output_results()
+                            elif fsize_op == 'gt':
+                                if file.endswith(s_ext) and sizeinmb > custom_fsize:
+                                    output_results()
+                            else:
+                                continue
+                    else:
+                        if fsize_op == 'lt':
+                            if sizeinmb < custom_fsize:
+                                output_results()
+                        elif fsize_op == 'gt':
+                            if sizeinmb > custom_fsize:
+                                output_results()
 
         
         # save results to file
@@ -156,6 +206,8 @@ def main():
             break
         if event == '_INDEX_':
             s.create_new_index(values)
+            now = datetime.datetime.now()
+            likenow = f'{now.hour}:{now.minute}:{now.second}'
             print()
             print(f">> New index created - {likenow}")
             print()
@@ -165,8 +217,8 @@ def main():
 
             # print the results to output element
             print()
-            for result in s.results:
-                print(result)
+            for output in s.outputs:
+                print(output)
             
             print()
             print(">> Searched {:,d} records and found {:,d} matches".format(s.records, s.matches))
