@@ -31,7 +31,7 @@ class Gui:
             [sg.Text('FILTER BY FILE SIZE', font=(22))],
             [sg.Radio('off', "_RADIO_FILESIZE_", default=True, key='Radio_filesize_1'), sg.Radio('less than', "_RADIO_FILESIZE_", key='Radio_filesize_2'), sg.Radio('greater than', "_RADIO_FILESIZE_", key='Radio_filesize_3')],
             [sg.Text('Filesize (MB)'), sg.InputText(key='_CUSTOM_FILESIZE_')],
-            [sg.Button("Search", size=(10, 1), key='_SEARCH_')],
+            [sg.Button("Search", size=(10, 1), bind_return_key=True, key='_SEARCH_')],
             [sg.Text('Search will create a "search_results.txt" file with the results.')],
             [sg.Output(size=(100,30))],
             [sg.Text('')],

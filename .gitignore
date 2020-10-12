@@ -1,3 +1,7 @@
 .vscode/
 .venv/
 *.txt
+__pycache__/
+build/
+dist/
+*.spec
